@@ -4,7 +4,7 @@ Project -- Feature Development Backend: Create CRUD API's for Client
 
 User Story
 
-As a user of the backend API's, we want to call API's that can retrieve, update, and delete information of clients who have already registered with the CaseManagment service so that we more efficiently help previous clients make better decisions on how to be gainfully employed.
+As a user of the backend API's, I want to call API's that can retrieve, update, and delete information of clients who have already registered with the CaseManagment service so that I more efficiently help previous clients make better decisions on how to be gainfully employed.
 
 Acceptance Criteria
 - Provide REST API endpoints so that the Frontend can use them to get information on an existing client.
