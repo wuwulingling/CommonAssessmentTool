@@ -1,5 +1,6 @@
 from logic import interpret_and_calculate
 from itertools import combinations_with_replacement
+from itertools import product
 
 # def test_interpret_and_calculate():
 #     print("running tests")
@@ -9,15 +10,21 @@ from itertools import combinations_with_replacement
 #     result = interpret_and_calculate(data)
 #     print(data)
 
-from itertools import product
+
 
 # Cartesian product of [0, 1] repeated 2 times
-result = list(product([0, 1], repeat=2))
+#result = list(product([0, 1], repeat=2))
 
 # Output: [(0, 0), (0, 1), (1, 0), (1, 1)]
 print(result)
 
-result = list(combinations_with_replacement([0, 1], 2))
+#result = list(combinations_with_replacement([0, 1], 2))
 
 # Output: [(0, 0), (0, 1), (1, 1)]
-print(result)
+#print(result)
+
+def test_product():
+    """Test itertools product function"""
+    result = list(product([0, 1], repeat=2))
+    expected = [(0, 0), (0, 1), (1, 0), (1, 1)]
+    assert result == expected
