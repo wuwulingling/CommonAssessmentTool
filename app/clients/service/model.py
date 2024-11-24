@@ -34,19 +34,19 @@ def prepare_models():
         'level_of_schooling',    # Highest level achieved (1-14)
         'fluent_english',        # English fluency scale (1-10)
         'reading_english_scale', # Reading ability scale (1-10)
-        'speaking_english_scale', # Speaking ability scale (1-10)
-        'writing_english_scale',  # Writing ability scale (1-10)
+        'speaking_english_scale',# Speaking ability scale (1-10)
+        'writing_english_scale', # Writing ability scale (1-10)
         'numeracy_scale',        # Numeracy ability scale (1-10)
         'computer_scale',        # Computer proficiency scale (1-10)
-        'transportation_bool',    # Needs transportation support (bool)
-        'caregiver_bool',        # Is primary caregiver (bool)
-        'housing',               # Housing situation (1-10)
-        'income_source',         # Source of income (1-10)
-        'felony_bool',           # Has a felony (bool)
-        'attending_school',      # Currently a student (bool)
-        'currently_employed',    # Currently employed (bool)
-        'substance_use',         # Substance use disorder (bool)
-        'time_unemployed',       # Years unemployed
+        'transportation_bool',   # Needs transportation support (bool)
+        'caregiver_bool',       # Is primary caregiver (bool)
+        'housing',              # Housing situation (1-10)
+        'income_source',        # Source of income (1-10)
+        'felony_bool',          # Has a felony (bool)
+        'attending_school',     # Currently a student (bool)
+        'currently_employed',   # Currently employed (bool)
+        'substance_use',        # Substance use disorder (bool)
+        'time_unemployed',      # Years unemployed
         'need_mental_health_support_bool'  # Needs mental health support (bool)
     ]
     
@@ -65,20 +65,20 @@ def prepare_models():
     all_features = feature_columns + intervention_columns
     
     # Prepare training data
-    X = np.array(data[all_features])
-    y = np.array(data['success_rate'])
+    features = np.array(data[all_features])  # Changed from X to features
+    targets = np.array(data['success_rate'])  # Changed from y to targets
     
     # Split the dataset
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, 
-        y, 
-        test_size=0.2, 
+    features_train, _, targets_train, _ = train_test_split(  # Removed unused variables
+        features,
+        targets,
+        test_size=0.2,
         random_state=42
     )
     
     # Initialize and train the model
     model = RandomForestRegressor(n_estimators=100, random_state=42)
-    model.fit(X_train, y_train)
+    model.fit(features_train, targets_train)
     
     return model
 
@@ -115,3 +115,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    

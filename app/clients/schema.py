@@ -83,7 +83,9 @@ class ClientBase(BaseModel):
 
 class ClientCreate(ClientBase):
     """Schema for creating a new client. Inherits all fields from ClientBase."""
-    pass
+    def __str__(self):
+        """String representation of the ClientCreate instance."""
+        return f"ClientCreate(name={self.name}, email={self.email})"
 
 class ClientUpdate(ClientBase):
     """
@@ -105,6 +107,10 @@ class Client(ClientBase):
     class Config:
         """Pydantic configuration for the Client model."""
         from_attributes = True
+
+        def __str__(self):
+            """String representation of the Config instance."""
+            return "Client Config(from_attributes=True)"
 
 class ClientList(BaseModel):
     """
