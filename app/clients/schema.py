@@ -81,20 +81,9 @@ class ClientBase(BaseModel):
             raise ValueError(f'Priority must be one of {allowed_priorities}')
         return v
 
-    # added public methods
-    def is_eligible_for_service(self):
-        """
-        Determine if the client is eligible for a specific service.
-        Example criteria: must have a case status of 'new' and be employed.
-        """
-        return self.case_status == 'new' and (self.currently_employed == 'yes')
-
-    def display_info(self):
-        """Display relevant client information."""
-        return f"Client(Name: {self.name}, Email: {self.email}, Status: {self.case_status})"
-
 class ClientCreate(ClientBase):
     """Schema for creating a new client. Inherits all fields from ClientBase."""
+    # pylint: disable=too-few-public-methods
     def __str__(self):
         """String representation of the ClientCreate instance."""
         return f"ClientCreate(name={self.name}, email={self.email})"
@@ -106,6 +95,7 @@ class ClientUpdate(ClientBase):
     """
     name: Optional[str] = None
     email: Optional[str] = None
+    # pylint: disable=too-few-public-methods
 
 class Client(ClientBase):
     """
@@ -131,3 +121,4 @@ class ClientList(BaseModel):
     """
     clients: List[Client]
     total: int
+    # pylint: disable=too-few-public-methods
