@@ -4,16 +4,16 @@ Handles all HTTP requests for client operations including create, read, update, 
 """
 
 # Standard library imports
-from typing import List
+#from typing import List
 
 # Third-party imports
-from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.responses import HTMLResponse
+from fastapi import APIRouter, Depends, status
+#from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session
 
 # Local application imports
 from app.database import get_db
-from app.models import Client
+#from app.models import Client
 from app.clients.schema import (
     PredictionInput,
     ClientCreate,
@@ -130,4 +130,3 @@ async def delete_client(
     """
     ClientService.delete_client(db, client_id)
     return None
-    

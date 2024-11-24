@@ -4,7 +4,7 @@ Contains the Client model for storing client information in the database.
 """
 
 from sqlalchemy import Column, Integer, String, DateTime, Text, text
-from sqlalchemy.sql import func
+#from sqlalchemy.sql import func
 from app.database import Base
 
 class Client(Base):
@@ -94,4 +94,3 @@ class Client(Base):
             'created_at': self.created_at,
             'updated_at': self.updated_at
         }
-        

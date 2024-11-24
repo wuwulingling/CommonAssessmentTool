@@ -1,3 +1,7 @@
+"""
+Basic test module for the Common Assessment Tool.
+Contains unit tests for core functionality.
+"""
 #from logic import interpret_and_calculate
 #from itertools import combinations_with_replacement
 from itertools import product
