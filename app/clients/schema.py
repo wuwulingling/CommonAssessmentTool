@@ -81,6 +81,18 @@ class ClientBase(BaseModel):
             raise ValueError(f'Priority must be one of {allowed_priorities}')
         return v
 
+    # added public methods
+    def is_eligible_for_service(self):
+        """
+        Determine if the client is eligible for a specific service.
+        Example criteria: must have a case status of 'new' and be employed.
+        """
+        return self.case_status == 'new' and (self.currently_employed == 'yes')
+
+    def display_info(self):
+        """Display relevant client information."""
+        return f"Client(Name: {self.name}, Email: {self.email}, Status: {self.case_status})"
+
 class ClientCreate(ClientBase):
     """Schema for creating a new client. Inherits all fields from ClientBase."""
     def __str__(self):
