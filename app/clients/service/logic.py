@@ -49,7 +49,6 @@ def clean_input_data(input_data):
         "currently_employed", "substance_use", "time_unemployed",
         "need_mental_health_support_bool"
     ]
-    
     demographics = {key: input_data[key] for key in columns}
     output = []
     for column in columns:
@@ -99,7 +98,6 @@ def convert_text(column, text_data: str):
             "Employment": 8, "Self-Employment": 9, "Other (specify)": 10
         }
     ]
-    
     for category in categorical_mappings:
         if text_data in category:
             return category[text_data]
@@ -172,7 +170,6 @@ def process_results(baseline_pred, results_matrix):
         (row[-1], intervention_row_to_names(row[:-1]))
         for row in results_matrix
     ]
-    
     return {
         "baseline": baseline_pred[-1],
         "interventions": result_list
@@ -191,14 +188,11 @@ def interpret_and_calculate(input_data):
     raw_data = clean_input_data(input_data)
     baseline_row = get_baseline_row(raw_data).reshape(1, -1)
     intervention_rows = create_matrix(raw_data)
-    
     baseline_prediction = MODEL.predict(baseline_row)
     intervention_predictions = MODEL.predict(intervention_rows).reshape(-1, 1)
-    
     result_matrix = np.concatenate((intervention_rows, intervention_predictions), axis=1)
     result_order = result_matrix[:, -1].argsort()
     result_matrix = result_matrix[result_order]
-    
     top_results = result_matrix[-3:, -8:]
     return process_results(baseline_prediction, top_results)
 

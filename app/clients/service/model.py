@@ -21,7 +21,6 @@ def prepare_models():
     """
     # Load dataset
     data = pd.read_csv('data_commontool.csv')
-    
     # Define feature columns
     feature_columns = [
         'age',                    # Client's age
@@ -49,7 +48,6 @@ def prepare_models():
         'time_unemployed',      # Years unemployed
         'need_mental_health_support_bool'  # Needs mental health support (bool)
     ]
-    
     # Define intervention columns
     intervention_columns = [
         'employment_assistance',
@@ -60,14 +58,11 @@ def prepare_models():
         'employer_financial_supports',
         'enhanced_referrals'
     ]
-    
     # Combine all feature columns
     all_features = feature_columns + intervention_columns
-    
     # Prepare training data
     features = np.array(data[all_features])  # Changed from X to features
     targets = np.array(data['success_rate'])  # Changed from y to targets
-    
     # Split the dataset
     features_train, _, targets_train, _ = train_test_split(  # Removed unused variables
         features,
@@ -75,11 +70,9 @@ def prepare_models():
         test_size=0.2,
         random_state=42
     )
-    
     # Initialize and train the model
     model = RandomForestRegressor(n_estimators=100, random_state=42)
     model.fit(features_train, targets_train)
-    
     return model
 
 def save_model(model, filename="model.pkl"):
@@ -115,4 +108,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
