@@ -1,5 +1,3 @@
-Fixed main.py
-
 """
 Main application module for the Common Assessment Tool.
 This module initializes the FastAPI application and includes all routers.
