@@ -53,16 +53,15 @@ def clean_input_data(input_data):
     for column in columns:
         value = demographics.get(column, None)
         if isinstance(value, str):
-            value = convert_text(column, value)
+            value = convert_text(value)  # Removed 'column' from here as it wasn't used
         output.append(value)
     return output
 
-def convert_text(column, text_data: str):
+def convert_text(text_data: str):
     """
     Convert text answers from front end into numerical values.
 
     Args:
-        column (str): Column name for the data
         text_data (str): Text data to convert
 
     Returns:
