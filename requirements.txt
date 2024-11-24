@@ -140,3 +140,8 @@ webencodings==0.5.1
 websocket-client==1.5.1
 websockets==11.0.3
 widgetsnbextension==4.0.7
+
+pylint==2.13.5
+pytest==6.2.5
+flask==2.0.1
+
