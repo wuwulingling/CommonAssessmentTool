@@ -2,22 +2,22 @@ name: Python CI Pipeline
 
 on:
   push:
-    branches: [ master, main ]
+    branches: [master, main]
   pull_request:
-    branches: [ master, main ]
+    branches: [master, main]
 
 jobs:
   test:
-    runs-on: ubuntu-latest  # Use the latest Ubuntu runner
+    runs-on: ubuntu-latest # Use the latest Ubuntu runner
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2  # Checkout the repository
+        uses: actions/checkout@v2 # Checkout the repository
 
       - name: Set up Python
-        uses: actions/setup-python@v2  # Set up Python environment
+        uses: actions/setup-python@v2 # Set up Python environment
         with:
-          python-version: '3.x'
+          python-version: "3.x"
 
       - name: Install dependencies
         run: |
@@ -34,5 +34,11 @@ jobs:
 
       - name: Print Success Message
         run: |
-       	  echo "CI Pipeline completed successfully!"
-	
+          echo "CI Pipeline completed successfully!"
+          echo "========================"
+          echo "✓ Code checked out"
+          echo "✓ Python environment set up"
+          echo "✓ Dependencies installed"
+          echo "✓ Linting completed"
+          echo "✓ Tests executed"
+          echo "========================"
