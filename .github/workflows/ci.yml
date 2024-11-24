@@ -12,25 +12,27 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2 # Checkout the repository
+        uses: actions/checkout@v4 # Checkout the repository
 
       - name: Set up Python
-        uses: actions/setup-python@v2 # Set up Python environment
+        uses: actions/setup-python@v5 # Set up Python environment
         with:
-          python-version: "3.x"
+          python-version: "3.11"
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip  # Upgrade pip to the latest version
+          pip install setuptools wheel
           pip install -r requirements.txt  # Install dependencies from requirements.txt
-
-      - name: Run Pylint
-        run: |
-          pylint $(git ls-files '*.py')
+          pip install pylint pytest
 
       - name: Run Tests
         run: |
           python -m pytest tests/
+
+      - name: Run Pylint
+        run: |
+          pylint $(git ls-files '*.py')
 
       - name: Print Success Message
         run: |
@@ -39,6 +41,6 @@ jobs:
           echo "✓ Code checked out"
           echo "✓ Python environment set up"
           echo "✓ Dependencies installed"
-          echo "✓ Linting completed"
           echo "✓ Tests executed"
+          echo "✓ Linting completed"
           echo "========================"
