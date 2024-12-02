@@ -4,11 +4,14 @@ Defines schemas for client data, predictions, and API responses.
 """
 
 # Standard library imports
-from datetime import datetime
+from pydantic import BaseModel, Field, validator
 from typing import Optional, List
+from enum import IntEnum
 
-# Third-party imports
-from pydantic import BaseModel, field_validator
+# Enums for validation
+class Gender(IntEnum):
+    MALE = 1
+    FEMALE = 2
 
 class PredictionInput(BaseModel):
     """
@@ -41,84 +44,117 @@ class PredictionInput(BaseModel):
     need_mental_health_support_bool: str
 
 class ClientBase(BaseModel):
-    """
-    Base schema for clients containing shared properties.
-    Used as a base class for create, update, and response schemas.
-    """
-    name: str
-    email: str
-    phone: Optional[str] = None
-    age: Optional[int] = None
-    gender: Optional[str] = None
-    work_experience: Optional[int] = None
-    canada_workex: Optional[int] = None
-    dep_num: Optional[int] = None
-    canada_born: Optional[str] = None
-    citizen_status: Optional[str] = None
-    level_of_schooling: Optional[str] = None
-    # Case management specific fields
-    case_status: Optional[str] = "new"
-    case_type: Optional[str] = None
-    assigned_to: Optional[str] = None
-    priority: Optional[str] = "medium"
-    case_notes: Optional[str] = None
-
-    @field_validator('case_status')
-    @classmethod
-    def validate_case_status(cls, v):
-        """Validate that case status is one of the allowed values."""
-        allowed_statuses = ['new', 'in_progress', 'closed']
-        if v not in allowed_statuses:
-            raise ValueError(f'Status must be one of {allowed_statuses}')
-        return v
-
-    @field_validator('priority')
-    @classmethod
-    def validate_priority(cls, v):
-        """Validate that priority is one of the allowed values."""
-        allowed_priorities = ['low', 'medium', 'high']
-        if v not in allowed_priorities:
-            raise ValueError(f'Priority must be one of {allowed_priorities}')
-        return v
-
-class ClientCreate(ClientBase):
-    """Schema for creating a new client. Inherits all fields from ClientBase."""
-    # pylint: disable=too-few-public-methods
-    def __str__(self):
-        """String representation of the ClientCreate instance."""
-        return f"ClientCreate(name={self.name}, email={self.email})"
-
-class ClientUpdate(ClientBase):
-    """
-    Schema for updating an existing client.
-    Makes all fields optional to allow partial updates.
-    """
-    name: Optional[str] = None
-    email: Optional[str] = None
-    # pylint: disable=too-few-public-methods
-
-class Client(ClientBase):
-    """
-    Schema for client responses, includes additional fields set by the system.
-    Used for returning client data in API responses.
-    """
-    id: int
-    created_at: datetime
-    updated_at: datetime
+    age: int = Field(ge=18, description="Age of client, must be 18 or older")
+    gender: Gender = Field(description="Gender: 1 for male, 2 for female")
+    work_experience: int = Field(ge=0, description="Years of work experience")
+    canada_workex: int = Field(ge=0, description="Years of Canadian work experience")
+    dep_num: int = Field(ge=0, description="Number of dependents")
+    canada_born: bool = Field(description="Whether client was born in Canada")
+    citizen_status: bool = Field(description="Client's citizenship status")
+    level_of_schooling: int = Field(ge=1, le=14, description="Education level (1-14)")
+    fluent_english: bool = Field(description="English fluency status")
+    reading_english_scale: int = Field(ge=0, le=10, description="English reading level (0-10)")
+    speaking_english_scale: int = Field(ge=0, le=10, description="English speaking level (0-10)")
+    writing_english_scale: int = Field(ge=0, le=10, description="English writing level (0-10)")
+    numeracy_scale: int = Field(ge=0, le=10, description="Numeracy skill level (0-10)")
+    computer_scale: int = Field(ge=0, le=10, description="Computer skill level (0-10)")
+    transportation_bool: bool = Field(description="Has transportation")
+    caregiver_bool: bool = Field(description="Is a caregiver")
+    housing: int = Field(ge=1, le=10, description="Housing situation (1-10)")
+    income_source: int = Field(ge=1, le=11, description="Source of income (1-11)")
+    felony_bool: bool = Field(description="Has felony record")
+    attending_school: bool = Field(description="Currently attending school")
+    currently_employed: bool = Field(description="Current employment status")
+    substance_use: bool = Field(description="Substance use status")
+    time_unemployed: int = Field(ge=0, description="Time unemployed in months")
+    need_mental_health_support_bool: bool = Field(description="Needs mental health support")
 
     class Config:
-        """Pydantic configuration for the Client model."""
+        json_schema_extra = {
+            "example": {
+                "age": 25,
+                "gender": 1,
+                "work_experience": 3,
+                "canada_workex": 2,
+                "dep_num": 1,
+                "canada_born": False,
+                "citizen_status": True,
+                "level_of_schooling": 8,
+                "fluent_english": True,
+                "reading_english_scale": 8,
+                "speaking_english_scale": 7,
+                "writing_english_scale": 7,
+                "numeracy_scale": 8,
+                "computer_scale": 9,
+                "transportation_bool": True,
+                "caregiver_bool": False,
+                "housing": 5,
+                "income_source": 3,
+                "felony_bool": False,
+                "attending_school": False,
+                "currently_employed": False,
+                "substance_use": False,
+                "time_unemployed": 6,
+                "need_mental_health_support_bool": False
+            }
+        }
+
+class ClientResponse(ClientBase):
+    id: int
+
+    class Config:
         from_attributes = True
 
-        def __str__(self):
-            """String representation of the Config instance."""
-            return "Client Config(from_attributes=True)"
+class ClientUpdate(BaseModel):
+    age: Optional[int] = Field(None, ge=18)
+    gender: Optional[Gender] = None
+    work_experience: Optional[int] = Field(None, ge=0)
+    canada_workex: Optional[int] = Field(None, ge=0)
+    dep_num: Optional[int] = Field(None, ge=0)
+    canada_born: Optional[bool] = None
+    citizen_status: Optional[bool] = None
+    level_of_schooling: Optional[int] = Field(None, ge=1, le=14)
+    fluent_english: Optional[bool] = None
+    reading_english_scale: Optional[int] = Field(None, ge=0, le=10)
+    speaking_english_scale: Optional[int] = Field(None, ge=0, le=10)
+    writing_english_scale: Optional[int] = Field(None, ge=0, le=10)
+    numeracy_scale: Optional[int] = Field(None, ge=0, le=10)
+    computer_scale: Optional[int] = Field(None, ge=0, le=10)
+    transportation_bool: Optional[bool] = None
+    caregiver_bool: Optional[bool] = None
+    housing: Optional[int] = Field(None, ge=1, le=10)
+    income_source: Optional[int] = Field(None, ge=1, le=11)
+    felony_bool: Optional[bool] = None
+    attending_school: Optional[bool] = None
+    currently_employed: Optional[bool] = None
+    substance_use: Optional[bool] = None
+    time_unemployed: Optional[int] = Field(None, ge=0)
+    need_mental_health_support_bool: Optional[bool] = None
 
-class ClientList(BaseModel):
-    """
-    Schema for returning multiple clients with pagination information.
-    Used for list endpoints that return multiple clients.
-    """
-    clients: List[Client]
+class ServiceResponse(BaseModel):
+    employment_assistance: bool
+    life_stabilization: bool
+    retention_services: bool
+    specialized_services: bool
+    employment_related_financial_supports: bool
+    employer_financial_supports: bool
+    enhanced_referrals: bool
+    success_rate: int = Field(ge=0, le=100)
+
+    class Config:
+        from_attributes = True
+
+class ServiceUpdate(BaseModel):
+    employment_assistance: Optional[bool] = None
+    life_stabilization: Optional[bool] = None
+    retention_services: Optional[bool] = None
+    specialized_services: Optional[bool] = None
+    employment_related_financial_supports: Optional[bool] = None
+    employer_financial_supports: Optional[bool] = None
+    enhanced_referrals: Optional[bool] = None
+    success_rate: Optional[int] = Field(None, ge=0, le=100)
+
+class ClientListResponse(BaseModel):
+    clients: List[ClientResponse]
     total: int
-    # pylint: disable=too-few-public-methods
+    

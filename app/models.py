@@ -3,94 +3,79 @@ Database models module defining SQLAlchemy ORM models for the Common Assessment 
 Contains the Client model for storing client information in the database.
 """
 
-from sqlalchemy import Column, Integer, String, DateTime, Text, text
-#from sqlalchemy.sql import func
 from app.database import Base
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, CheckConstraint, Enum
+from sqlalchemy.orm import relationship
+import enum
+
+class UserRole(str, enum.Enum):
+    admin = "admin"
+    case_worker = "case_worker"
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    username = Column(String(50), unique=True, nullable=False)
+    email = Column(String(100), unique=True, nullable=False)
+    hashed_password = Column(String(200), nullable=False)
+    role = Column(Enum(UserRole), nullable=False)
+
+    # Relationship to client_cases
+    cases = relationship("ClientCase", back_populates="user")
 
 class Client(Base):
     """
     Client model representing client data in the database.
-    
-    Attributes:
-        id (int): Primary key
-        name (str): Client's name
-        email (str): Client's email address
-        phone (str): Client's phone number
-        age (int): Client's age
-        gender (str): Client's gender
-        work_experience (int): Years of work experience
-        canada_workex (int): Years of work experience in Canada
-        dep_num (int): Number of dependents
-        canada_born (str): Born in Canada indicator
-        citizen_status (str): Citizenship status
-        level_of_schooling (str): Education level
-        case_status (str): Current case status
-        case_type (str): Type of case
-        assigned_to (str): Case manager assigned
-        priority (str): Case priority level
-        case_notes (Text): Additional case notes
-        created_at (DateTime): Record creation timestamp
-        updated_at (DateTime): Record last update timestamp
     """
-    __tablename__ = "clients"
+    __tablename__ = "clients"  #name this table clients inside of our database
 
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String)
-    email = Column(String(100), unique=True, index=True)
-    phone = Column(String(20))
-    age = Column(Integer)
-    gender = Column(String)
-    work_experience = Column(Integer)
-    canada_workex = Column(Integer)
-    dep_num = Column(Integer)
-    canada_born = Column(String(3))
-    citizen_status = Column(String(50))
-    level_of_schooling = Column(String(100))
-    case_status = Column(String(50), default="new")
-    case_type = Column(String(100))
-    assigned_to = Column(String(100))
-    priority = Column(String(20))
-    case_notes = Column(Text)
-    created_at = Column(
-        DateTime,
-        server_default=text('CURRENT_TIMESTAMP'),
-        nullable=False
-    )
-    updated_at = Column(
-        DateTime,
-        server_default=text('CURRENT_TIMESTAMP'),
-        onupdate=text('CURRENT_TIMESTAMP'),
-        nullable=False
-    )
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    age = Column(Integer, CheckConstraint('age >= 18'))
+    gender = Column(Integer, CheckConstraint("gender = 1 OR gender = 2"))
+    work_experience = Column(Integer, CheckConstraint('work_experience >= 0'))
+    canada_workex = Column(Integer, CheckConstraint('canada_workex >= 0'))
+    dep_num = Column(Integer, CheckConstraint('dep_num >= 0'))
+    canada_born = Column(Boolean)
+    citizen_status = Column(Boolean)
+    level_of_schooling = Column(Integer, CheckConstraint('level_of_schooling >= 1 AND level_of_schooling <= 14'))
+    fluent_english = Column(Boolean)
+    reading_english_scale = Column(Integer, CheckConstraint('reading_english_scale >= 0 AND reading_english_scale <= 10'))
+    speaking_english_scale = Column(Integer, CheckConstraint('speaking_english_scale >= 0 AND speaking_english_scale <= 10'))
+    writing_english_scale = Column(Integer, CheckConstraint('writing_english_scale >= 0 AND writing_english_scale <= 10'))
+    numeracy_scale = Column(Integer, CheckConstraint('numeracy_scale >= 0 AND numeracy_scale <= 10'))
+    computer_scale = Column(Integer, CheckConstraint('computer_scale >= 0 AND computer_scale <= 10'))
+    transportation_bool = Column(Boolean)
+    caregiver_bool = Column(Boolean)
+    housing = Column(Integer, CheckConstraint('housing >= 1 AND housing <= 10'))
+    income_source = Column(Integer, CheckConstraint('income_source >= 1 AND income_source <= 11'))
+    felony_bool = Column(Boolean)
+    attending_school = Column(Boolean)
+    currently_employed = Column(Boolean)
+    substance_use = Column(Boolean)
+    time_unemployed = Column(Integer, CheckConstraint('time_unemployed >= 0'))
+    need_mental_health_support_bool = Column(Boolean)
 
-    def __repr__(self):
-        """Return string representation of the Client object."""
-        return f"Client(id={self.id}, name={self.name}, age={self.age})"
+    # Relationship to client_cases
+    cases = relationship("ClientCase", back_populates="client")
 
-    def __str__(self):
-        """Return human-readable string representation of the Client object."""
-        return f"Client {self.name} (ID: {self.id})"
+class ClientCase(Base):
+    __tablename__ = "client_cases"
 
-    def to_dict(self):
-        """Convert Client object to dictionary."""
-        return {
-            'id': self.id,
-            'name': self.name,
-            'email': self.email,
-            'phone': self.phone,
-            'age': self.age,
-            'gender': self.gender,
-            'work_experience': self.work_experience,
-            'canada_workex': self.canada_workex,
-            'dep_num': self.dep_num,
-            'canada_born': self.canada_born,
-            'citizen_status': self.citizen_status,
-            'level_of_schooling': self.level_of_schooling,
-            'case_status': self.case_status,
-            'case_type': self.case_type,
-            'assigned_to': self.assigned_to,
-            'priority': self.priority,
-            'case_notes': self.case_notes,
-            'created_at': self.created_at,
-            'updated_at': self.updated_at
-        }
+    client_id = Column(Integer, ForeignKey("clients.id"), primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
+    
+    # Service fields from CSV
+    employment_assistance = Column(Boolean)
+    life_stabilization = Column(Boolean)
+    retention_services = Column(Boolean)
+    specialized_services = Column(Boolean)
+    employment_related_financial_supports = Column(Boolean)
+    employer_financial_supports = Column(Boolean)
+    enhanced_referrals = Column(Boolean)
+    success_rate = Column(Integer, CheckConstraint('success_rate >= 0 AND success_rate <= 100'))
+
+    # Relationships
+    client = relationship("Client", back_populates="cases")
+    user = relationship("User", back_populates="cases")

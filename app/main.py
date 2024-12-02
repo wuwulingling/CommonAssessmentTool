@@ -4,24 +4,17 @@ This module initializes the FastAPI application and includes all routers.
 Handles database initialization and CORS middleware configuration.
 """
 
-# Third-party imports
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-
-# Local application imports
-from app.clients.router import router as clients_router
-from app.database import engine
 from app import models
+from app.database import engine
+from app.clients.router import router as clients_router
+from fastapi.middleware.cors import CORSMiddleware
 
 # Initialize database tables
 models.Base.metadata.create_all(bind=engine)
 
 # Create FastAPI application
-app = FastAPI(
-    title="Case Management API",
-    description="API for managing client cases and predictions",
-    version="1.0.0"
-)
+app = FastAPI(title="Case Management API", description="API for managing client cases", version="1.0.0")
 
 # Include routers
 app.include_router(clients_router)
