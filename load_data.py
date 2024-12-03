@@ -22,9 +22,9 @@ def load_csv_data():
     try:
         # Create admin user
         admin_user = User(
-            username="admin",
-            email="admin@example.com",
-            hashed_password="admin123",
+            username="user",
+            email="user@example.com",
+            hashed_password="user123",
             role="admin"
         )
         db.add(admin_user)
@@ -36,7 +36,7 @@ def load_csv_data():
             role="case_worker"
         )
         db.add(case_worker)
-        
+
         db.commit()
 
         # Process each row in CSV

@@ -74,7 +74,6 @@ class ClientService:
         """Get clients filtered by any combination of criteria"""
         query = db.query(Client)
     
-        # Validate numeric ranges
         if education_level is not None and not (1 <= education_level <= 14):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -161,9 +160,8 @@ class ClientService:
         """
         query = db.query(Client).join(ClientCase)
     
-        # Apply filters for each specified service
         for service_name, status in service_filters.items():
-            if status is not None:  # Only apply filter if status is specified
+            if status is not None:
                 filter_criteria = getattr(ClientCase, service_name) == status
                 query = query.filter(filter_criteria)
     
@@ -246,7 +244,6 @@ class ClientService:
         service_update: ServiceUpdate
     ):
         """Update a client's services and outcomes for a specific case worker"""
-        # First verify the client-case worker relationship exists
         client_case = db.query(ClientCase).filter(
             ClientCase.client_id == client_id,
             ClientCase.user_id == user_id
@@ -259,7 +256,6 @@ class ClientService:
                     f"Cannot update services for a non-existent case assignment."
             )
 
-        # Update service fields
         update_data = service_update.dict(exclude_unset=True)
         for field, value in update_data.items():
             setattr(client_case, field, value)

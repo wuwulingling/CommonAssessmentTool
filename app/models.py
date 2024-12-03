@@ -22,14 +22,13 @@ class User(Base):
     hashed_password = Column(String(200), nullable=False)
     role = Column(Enum(UserRole), nullable=False)
 
-    # Relationship to client_cases
     cases = relationship("ClientCase", back_populates="user")
 
 class Client(Base):
     """
     Client model representing client data in the database.
     """
-    __tablename__ = "clients"  #name this table clients inside of our database
+    __tablename__ = "clients"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     age = Column(Integer, CheckConstraint('age >= 18'))
@@ -57,7 +56,6 @@ class Client(Base):
     time_unemployed = Column(Integer, CheckConstraint('time_unemployed >= 0'))
     need_mental_health_support_bool = Column(Boolean)
 
-    # Relationship to client_cases
     cases = relationship("ClientCase", back_populates="client")
 
 class ClientCase(Base):
@@ -66,7 +64,6 @@ class ClientCase(Base):
     client_id = Column(Integer, ForeignKey("clients.id"), primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
     
-    # Service fields from CSV
     employment_assistance = Column(Boolean)
     life_stabilization = Column(Boolean)
     retention_services = Column(Boolean)
@@ -76,6 +73,5 @@ class ClientCase(Base):
     enhanced_referrals = Column(Boolean)
     success_rate = Column(Integer, CheckConstraint('success_rate >= 0 AND success_rate <= 100'))
 
-    # Relationships
     client = relationship("Client", back_populates="cases")
     user = relationship("User", back_populates="cases")
