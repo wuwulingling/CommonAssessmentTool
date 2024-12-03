@@ -132,6 +132,8 @@ class ClientUpdate(BaseModel):
     need_mental_health_support_bool: Optional[bool] = None
 
 class ServiceResponse(BaseModel):
+    client_id: int
+    user_id: int
     employment_assistance: bool
     life_stabilization: bool
     retention_services: bool
