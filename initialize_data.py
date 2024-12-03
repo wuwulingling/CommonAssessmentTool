@@ -1,43 +1,56 @@
 import pandas as pd
 from sqlalchemy.orm import Session
 from app.database import SessionLocal
-from app.models import Client, User, ClientCase
+from app.models import Client, User, ClientCase, UserRole
+from app.auth.router import get_password_hash
 
-def load_csv_data():
-    # Read CSV file
-    df = pd.read_csv('app/clients/service/data_commontool.csv')
-    
-    # Convert data types explicitly
-    integer_columns = [
-        'age', 'gender', 'work_experience', 'canada_workex', 'dep_num',
-        'level_of_schooling', 'reading_english_scale', 'speaking_english_scale',
-        'writing_english_scale', 'numeracy_scale', 'computer_scale',
-        'housing', 'income_source', 'time_unemployed', 'success_rate'
-    ]
-    
-    for col in integer_columns:
-        df[col] = pd.to_numeric(df[col], errors='raise')
-
+def initialize_database():
+    print("Starting database initialization...")
     db = SessionLocal()
     try:
-        # Create admin user
-        admin_user = User(
-            username="user",
-            email="user@example.com",
-            hashed_password="user123",
-            role="admin"
-        )
-        db.add(admin_user)
+        # Create admin user if doesn't exist
+        admin = db.query(User).filter(User.username == "admin").first()
+        if not admin:
+            admin_user = User(
+                username="admin",
+                email="admin@example.com",
+                hashed_password=get_password_hash("admin123"),
+                role=UserRole.admin
+            )
+            db.add(admin_user)
+            db.commit()
+            print("Admin user created successfully")
+        else:
+            print("Admin user already exists")
 
-        case_worker = User(
-            username="case_worker1",
-            email="caseworker1@example.com",
-            hashed_password="worker123",
-            role="case_worker"
-        )
-        db.add(case_worker)
+        # Create case worker if doesn't exist
+        case_worker = db.query(User).filter(User.username == "case_worker1").first()
+        if not case_worker:
+            case_worker = User(
+                username="case_worker1",
+                email="caseworker1@example.com",
+                hashed_password=get_password_hash("worker123"),
+                role=UserRole.case_worker
+            )
+            db.add(case_worker)
+            db.commit()
+            print("Case worker created successfully")
+        else:
+            print("Case worker already exists")
 
-        db.commit()
+        # Load CSV data
+        print("Loading CSV data...")
+        df = pd.read_csv('app/clients/service/data_commontool.csv')
+        
+        # Convert data types
+        integer_columns = [
+            'age', 'gender', 'work_experience', 'canada_workex', 'dep_num',
+            'level_of_schooling', 'reading_english_scale', 'speaking_english_scale',
+            'writing_english_scale', 'numeracy_scale', 'computer_scale',
+            'housing', 'income_source', 'time_unemployed', 'success_rate'
+        ]
+        for col in integer_columns:
+            df[col] = pd.to_numeric(df[col], errors='raise')
 
         # Process each row in CSV
         for index, row in df.iterrows():
@@ -74,7 +87,7 @@ def load_csv_data():
             # Create client_case
             client_case = ClientCase(
                 client_id=client.id,
-                user_id=admin_user.id,
+                user_id=admin_user.id,  # Assign to admin
                 employment_assistance=bool(row['employment_assistance']),
                 life_stabilization=bool(row['life_stabilization']),
                 retention_services=bool(row['retention_services']),
@@ -87,11 +100,13 @@ def load_csv_data():
             db.add(client_case)
             db.commit()
 
+        print("Database initialization completed successfully!")
+
     except Exception as e:
-        print(f"Error loading data: {e}")
+        print(f"Error during initialization: {e}")
         db.rollback()
     finally:
         db.close()
 
 if __name__ == "__main__":
-    load_csv_data()
+    initialize_database()
