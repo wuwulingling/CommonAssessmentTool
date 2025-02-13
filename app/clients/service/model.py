@@ -1,40 +1,55 @@
-import pandas as pd
-import json
-import numpy as np
+"""
+Model training module for the Common Assessment Tool.
+Handles the preparation, training, and saving of the prediction model.
+"""
+
+# Standard library imports
 import pickle
+
+# Third-party imports
+import numpy as np
+import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 
-
 def prepare_models():
-    # Load dataset and define the features and labels
-    backendCode = pd.read_csv('data_commontool.csv')
-    # Define categorical columns and interventions
-    categorical_cols = ['age',
-                        'gender', #bool
-                        'work_experience', #years of work experience
-                        'canada_workex',#years of work experience in canada
-                        'dep_num', #number of dependents
-                        'canada_born', #born in canada
-                        'citizen_status', #citizen status
-                        'level_of_schooling', #highest level achieved (1-14)
-                        'fluent_english', #english level fluency, scale (1-10)
-                        'reading_english_scale', #reading scale (1-10)
-                        'speaking_english_scale', #speaking level comfort (1-10)
-                        'writing_english_scale', #writing scale (1-10) 
-                        'numeracy_scale', #numeracy scale (1-10)
-                        'computer_scale', #computer use scale (1-10)
-                        'transportation_bool', #need transportation support (bool)
-                        'caregiver_bool', #is a primary care giver bool
-                        'housing', #housing situation 1-10
-                        'income_source', #source of income 1-10
-                        'felony_bool', #has a felony bool
-                        'attending_school', #currently a student bool
-                        'currently_employed', #currently employed bool
-                        'substance_use', #disorder, bool
-                        'time_unemployed', #number of years unemployed
-                        'need_mental_health_support_bool'] #need support
-    interventions = [
+    """
+    Prepare and train the Random Forest model using the dataset.
+    
+    Returns:
+        RandomForestRegressor: Trained model for predicting success rates
+    """
+    # Load dataset
+    data = pd.read_csv('data_commontool.csv')
+    # Define feature columns
+    feature_columns = [
+        'age',                    # Client's age
+        'gender',                 # Client's gender (bool)
+        'work_experience',        # Years of work experience
+        'canada_workex',          # Years of work experience in Canada
+        'dep_num',               # Number of dependents
+        'canada_born',           # Born in Canada
+        'citizen_status',        # Citizenship status
+        'level_of_schooling',    # Highest level achieved (1-14)
+        'fluent_english',        # English fluency scale (1-10)
+        'reading_english_scale', # Reading ability scale (1-10)
+        'speaking_english_scale',# Speaking ability scale (1-10)
+        'writing_english_scale', # Writing ability scale (1-10)
+        'numeracy_scale',        # Numeracy ability scale (1-10)
+        'computer_scale',        # Computer proficiency scale (1-10)
+        'transportation_bool',   # Needs transportation support (bool)
+        'caregiver_bool',       # Is primary caregiver (bool)
+        'housing',              # Housing situation (1-10)
+        'income_source',        # Source of income (1-10)
+        'felony_bool',          # Has a felony (bool)
+        'attending_school',     # Currently a student (bool)
+        'currently_employed',   # Currently employed (bool)
+        'substance_use',        # Substance use disorder (bool)
+        'time_unemployed',      # Years unemployed
+        'need_mental_health_support_bool'  # Needs mental health support (bool)
+    ]
+    # Define intervention columns
+    intervention_columns = [
         'employment_assistance',
         'life_stabilization',
         'retention_services',
@@ -43,30 +58,53 @@ def prepare_models():
         'employer_financial_supports',
         'enhanced_referrals'
     ]
-    categorical_cols.extend(interventions)
+    # Combine all feature columns
+    all_features = feature_columns + intervention_columns
     # Prepare training data
-    X_categorical_baseline = backendCode[categorical_cols]
-    y_baseline = backendCode['success_rate']
-    X_categorical_baseline = np.array(X_categorical_baseline)
-    y_baseline = np.array(y_baseline)
-    X_train_baseline, X_test_baseline, y_train_baseline, y_test_baseline = train_test_split(
-        X_categorical_baseline, y_baseline, test_size=0.2, random_state=42)
+    features = np.array(data[all_features])  # Changed from X to features
+    targets = np.array(data['success_rate'])  # Changed from y to targets
+    # Split the dataset
+    features_train, _, targets_train, _ = train_test_split(  # Removed unused variables
+        features,
+        targets,
+        test_size=0.2,
+        random_state=42
+    )
+    # Initialize and train the model
+    model = RandomForestRegressor(n_estimators=100, random_state=42)
+    model.fit(features_train, targets_train)
+    return model
 
-    rf_model_baseline = RandomForestRegressor(n_estimators=100, random_state=42)
-    rf_model_baseline.fit(X_train_baseline, y_train_baseline)
-
-    # Example: Predicting on the test set
-    baseline_predictions = rf_model_baseline.predict(X_test_baseline)
-
+def save_model(model, filename="model.pkl"):
+    """
+    Save the trained model to a file.
     
-    return rf_model_baseline
+    Args:
+        model: Trained model to save
+        filename (str): Name of the file to save the model to
+    """
+    with open(filename, "wb") as model_file:
+        pickle.dump(model, model_file)
+
+def load_model(filename="model.pkl"):
+    """
+    Load a trained model from a file.
+    
+    Args:
+        filename (str): Name of the file to load the model from
+    
+    Returns:
+        The loaded model
+    """
+    with open(filename, "rb") as model_file:
+        return pickle.load(model_file)
 
 def main():
-    print("Start model.")
+    """Main function to train and save the model."""
+    print("Starting model training...")
     model = prepare_models()
-
-    pickle.dump(model, open("model.pkl", "wb")) #saves model to the file name input, write binary
-    model = pickle.load(open("model.pkl", "rb")) #read binary
+    save_model(model)
+    print("Model training completed and saved successfully.")
 
 if __name__ == "__main__":
     main()
