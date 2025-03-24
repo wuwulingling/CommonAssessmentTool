@@ -63,14 +63,6 @@ class SQLAlchemyUserRepository:
             Exception: If user creation fails
         """
 
-        # Check if username exists
-        if self.get_by_username(username):
-            raise ValueError("Username already exists")
-
-        # Check if email exists
-        if self.get_by_email(email):
-            raise ValueError("Email already exists")
-    
         db_user = User(
             username=username,
             email=email,
@@ -85,11 +77,6 @@ class SQLAlchemyUserRepository:
             return db_user
         except Exception as e:
             self.db.rollback()
-            # Convert database errors to domain-specific errors
-            if "UNIQUE constraint failed: users.username" in str(e):
-                raise ValueError("Username already exists")
-            if "UNIQUE constraint failed: users.email" in str(e):
-                raise ValueError("Email already exists")
             raise e
     
     def get_all(self) -> List[User]:
