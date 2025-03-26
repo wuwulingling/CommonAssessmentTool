@@ -6,8 +6,6 @@ Handles all HTTP requests for client operations including create, read, update, 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from app.auth.dependencies import get_current_user, get_admin_user
-from app.models import User, UserRole
 
 from app.database import get_db
 from app.clients.service.client_service import ClientService
