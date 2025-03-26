@@ -10,6 +10,11 @@ from app.database import engine
 from app.clients.router import router as clients_router
 from app.auth.router import router as auth_router
 from fastapi.middleware.cors import CORSMiddleware
+import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Initialize database tables
 models.Base.metadata.create_all(bind=engine)
@@ -29,3 +34,29 @@ app.add_middleware(
     allow_headers=["*"],     # Allows all headers
     allow_credentials=True,
 )
+
+# Health check endpoint
+@app.get("/health", tags=["health"])
+async def health_check():
+    """
+    Health check endpoint for monitoring
+    
+    Returns:
+        dict: Status message
+    """
+    return {"status": "ok", "version": app.version}
+
+
+if __name__ == "__main__":
+    import uvicorn
+    
+    # Get port from environment variable or default to 8000
+    port = int(os.getenv("PORT", 8000))
+    
+    # Start the application with uvicorn
+    uvicorn.run(
+        "app.main:app",
+        host="0.0.0.0",
+        port=port,
+        reload=os.getenv("ENVIRONMENT", "production").lower() == "development"
+    )
