@@ -1,7 +1,6 @@
 [project]
 name = "CommonAssessmentTool"
 version = "0.1.0"
-description = "Case management tool"
 authors = [
   {name = "Richeng Yang"},
   {name = "Jiayi Liu"},
@@ -11,14 +10,37 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.10"
 
-# List your dependencies here.
 dependencies = [
-  "fastapi",
-  "uvicorn",
-  "sqlalchemy",
-  "python-dotenv"
+  "fastapi>=0.103.2",
+  "uvicorn>=0.23.2",
+  "sqlalchemy>=2.0.21",
+  "pydantic>=2.4.2",
+  "python-dotenv>=1.0.0",
+  "pandas>=2.0.0",
+  "psycopg2-binary>=2.9.9",
+  "python-jose>=3.3.0",
+  "passlib>=1.7.4",
+  "bcrypt>=4.0.1",
+  "numpy>=1.24.2",
+  "scikit-learn>=1.4.2",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=7.2.0",
+  "pylint>=3.0.1",
+  "black>=23.10.0",
+  "httpx>=0.24.1",
 ]
 
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.black]
+line-length = 100
+target-version = ["py310"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
