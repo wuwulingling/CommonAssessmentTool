@@ -9,7 +9,7 @@ from app.models import User, UserRole
 
 from app.auth.dependencies import get_current_user, get_admin_user
 from app.models import User
-from app.clients.dependencies import get_client_service, get_prediction_service
+from app.clients.dependencies import get_client_service
 from app.clients.schema import (
     ClientResponse, 
     ClientUpdate, 
