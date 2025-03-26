@@ -4,6 +4,8 @@ Handles HTTP requests for client-related operations.
 """
 from fastapi import APIRouter, Depends, status, Query
 from typing import List, Optional
+from app.auth.dependencies import get_current_user, get_admin_user
+from app.models import User, UserRole
 
 from app.auth.dependencies import get_current_user, get_admin_user
 from app.models import User
