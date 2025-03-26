@@ -1,0 +1,24 @@
+[project]
+name = "CommonAssessmentTool"
+version = "0.1.0"
+description = "Case management tool"
+authors = [
+  {name = "Richeng Yang"},
+  {name = "Jiayi Liu"},
+  {name = "Yanyue Wang"},
+  {name = "Qilin Zeng"},
+]
+readme = "README.md"
+requires-python = ">=3.10"
+
+# List your dependencies here.
+dependencies = [
+  "fastapi",
+  "uvicorn",
+  "sqlalchemy",
+  "python-dotenv"
+]
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
