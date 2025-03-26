@@ -2,7 +2,7 @@ import pandas as pd
 from sqlalchemy.orm import Session
 from app.database import SessionLocal
 from app.models import Client, User, ClientCase, UserRole
-from app.auth.router import get_password_hash
+from app.auth.security import PasswordService
 
 def initialize_database():
     print("Starting database initialization...")
@@ -14,7 +14,7 @@ def initialize_database():
             admin_user = User(
                 username="admin",
                 email="admin@example.com",
-                hashed_password=get_password_hash("admin123"),
+                hashed_password=PasswordService.get_password_hash("admin123"),
                 role=UserRole.admin
             )
             db.add(admin_user)
@@ -29,7 +29,7 @@ def initialize_database():
             case_worker = User(
                 username="case_worker1",
                 email="caseworker1@example.com",
-                hashed_password=get_password_hash("worker123"),
+                hashed_password=PasswordService.get_password_hash("worker123"),
                 role=UserRole.case_worker
             )
             db.add(case_worker)
