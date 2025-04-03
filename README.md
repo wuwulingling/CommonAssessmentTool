@@ -55,3 +55,23 @@ This also has an API file to interact with the front end, and logic in order to 
 
 -Create case assignment (Allow authorized users to create a new case assignment.)
 
+-------------------------How to Run with Doker-------------------------
+- Option 1: Using Docker
+1. Build the Docker image: docker build -t common-assessment-tool .
+
+2. Run your container in detached mode: docker run -d -p 8000:8000 --name assessment-tool common-assessment-tool
+
+3. Then run the initialization script: docker exec -it assessment-tool python initialize_data.py
+
+4. Access the application at http://localhost:8000/docs
+
+5. Log in as admin (username: admin password: admin123)
+
+- Option 2: Using Docker Compose
+1. Start the application in background mode: docker-compose up -d
+
+2. Run the initialization script: docker-compose exec backend python initialize_data.py
+
+3. Access the application at http://localhost:8000/docs
+
+4. Log in as admin (username: admin password: admin123)
