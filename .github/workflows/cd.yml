@@ -2,11 +2,16 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [master, main]
-  push:
-    branches: [Qilin_Branch]
+    branches:
+      - master
+      - main
+      - Qilin_Branch
   pull_request:
-    branches: [master, main]
+    branches:
+      - master
+      - main
+      - Qilin_Branch
+
 
 jobs:
   test:
