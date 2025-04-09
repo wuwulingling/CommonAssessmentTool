@@ -44,7 +44,33 @@ jobs:
         run: |
           pytest tests/
 
-      # Step 7: Print Success Message
+      # Step 7: Lint Dockerfile syntax (optional)
+      - name: Lint Dockerfile syntax
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: ./Dockerfile
+
+      # Step 8: Build Docker Image
+      - name: Build Docker Image
+        run: docker build -t case-management-api .
+
+      # Step 9: Run Docker Container
+      - name: Run Docker Container
+        run: |
+          docker run -d -p 8000:8000 --name test-container case-management-api
+          sleep 5
+
+      # Step 10: Test API Endpoint
+      - name: Test API Endpoint
+        run: curl --fail http://localhost:8000/docs
+
+      # Step 11: Cleanup Docker Container
+      - name: Cleanup Docker Container
+        run: |
+          docker stop test-container
+          docker rm test-container
+
+      # Step 12: Print Success Message
       - name: Print Success Message
         if: success() # Only runs if previous steps are successful
         run: |
