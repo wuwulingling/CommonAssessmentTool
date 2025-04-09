@@ -28,7 +28,7 @@ from app.clients.schema import PredictionInput
 from app.clients.service.logic import interpret_and_calculate
 from app.clients.schema import PredictionInput
 
-router = APIRouter(prefix="/clients", tags=["clients"])
+router = APIRouter(tags=["clients"])
 
 @router.post("/predictions")
 async def predict(data: PredictionInput):
@@ -40,20 +40,20 @@ async def predict(data: PredictionInput):
 # Import the model_manager functions for switching models, getting the current model, and listing all available models
 from app.clients.service.model_manager import list_models, get_current_model_name, switch_model
 
-router = APIRouter(prefix="/models", tags=["models"])
+model_router = APIRouter(prefix="/models", tags=["models"])
 
 # API Endpoint for listing all available models
-@router.get("/", response_model=list)
+@model_router.get("/", response_model=list)
 def get_available_models():
     return list_models()
 
 # API Endpoint for getting the name of the currently active model
-@router.get("/current", response_model=str)
+@model_router.get("/current", response_model=str)
 def get_active_model():
     return get_current_model_name()
 
 # API Endpoint for switching to a different model by name
-@router.post("/switch/{model_name}")
+@model_router.post("/switch/{model_name}")
 def change_model(model_name: str):
     try:
         switch_model(model_name)

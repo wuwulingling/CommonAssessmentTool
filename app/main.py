@@ -7,7 +7,7 @@ Handles database initialization and CORS middleware configuration.
 from fastapi import FastAPI
 from app import models
 from app.database import engine
-from app.clients.router import router as clients_router
+from app.clients.router import router as clients_router, model_router
 from app.auth.router import router as auth_router
 from fastapi.middleware.cors import CORSMiddleware
 import os
@@ -24,7 +24,8 @@ app = FastAPI(title="Case Management API", description="API for managing client 
 
 # Include routers
 app.include_router(auth_router)
-app.include_router(clients_router)
+app.include_router(clients_router, prefix="/clients", tags=["Clients"])
+app.include_router(model_router) 
 
 # Configure CORS middleware
 app.add_middleware(
@@ -34,6 +35,12 @@ app.add_middleware(
     allow_headers=["*"],     # Allows all headers
     allow_credentials=True,
 )
+
+@app.on_event("startup")
+async def show_routes_on_startup():
+    print("✅ LOADED ROUTES:")
+    for route in app.routes:
+        print(f"  {route.path}")
 
 # Health check endpoint
 @app.get("/health", tags=["health"])
@@ -60,3 +67,4 @@ if __name__ == "__main__":
         port=port,
         reload=os.getenv("ENVIRONMENT", "production").lower() == "development"
     )
+

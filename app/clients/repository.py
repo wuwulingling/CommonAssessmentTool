@@ -86,20 +86,43 @@ class SQLAlchemyClientRepository:
     def filter_by_criteria(self, **criteria) -> List[Client]:
         """
         Filter clients by criteria
-        
+
         Args:
             **criteria: Filter criteria as keyword arguments
-            
+
         Returns:
             List[Client]: Filtered clients
         """
         query = self.db.query(Client)
-        
-        # Apply each filter for non-None values
+
+    
+        range_fields = {
+            "age_min": ("age", ">="),
+            "age_max": ("age", "<="),
+            "time_unemployed": ("time_unemployed", "=="),
+        }
+
         for field, value in criteria.items():
-            if value is not None:
-                query = query.filter(getattr(Client, field) == value)
-        
+            if value is None:
+                continue
+
+            if field in range_fields:
+                real_field, op = range_fields[field]
+                column = getattr(Client, real_field)
+                if op == ">=":
+                    query = query.filter(column >= value)
+                elif op == "<=":
+                    query = query.filter(column <= value)
+                elif op == "==":
+                    query = query.filter(column == value)
+
+            elif hasattr(Client, field):
+                column = getattr(Client, field)
+                query = query.filter(column == value)
+
+            else:
+                print(f"avoid unknown: {field}")
+
         try:
             return query.all()
         except Exception as e:
@@ -107,6 +130,7 @@ class SQLAlchemyClientRepository:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Error retrieving clients: {str(e)}"
             )
+
     
     def filter_by_services(self, **service_filters) -> List[Client]:
         """
