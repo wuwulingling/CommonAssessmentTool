@@ -3,6 +3,8 @@ name: CI/CD Pipeline
 on:
   push:
     branches: [master, main]
+  push:
+    branches: [Qilin_Branch]
   pull_request:
     branches: [master, main]
 
