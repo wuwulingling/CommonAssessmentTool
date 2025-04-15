@@ -349,3 +349,17 @@ async def delete_client(
     """
     client_service.delete_client(client_id)
     return None
+
+@router.get("/test-new-endpoint", 
+         tags=["test-tag"],  
+         summary="Brief description",
+         description="Detailed description",
+         response_description="Description of the response")
+async def new_endpoint():
+    """
+    This docstring will appear in the Swagger documentation
+    
+    Returns:
+        dict: Description of what the endpoint returns
+    """
+    return {"message": "Hello World"}
