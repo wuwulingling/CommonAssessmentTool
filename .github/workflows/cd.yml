@@ -5,13 +5,10 @@ on:
     branches:
       - master
       - main
-      - Qilin_Branch
   pull_request:
     branches:
       - master
       - main
-      - Qilin_Branch
-
 
 jobs:
   test:
@@ -35,20 +32,29 @@ jobs:
           python -m pytest tests/
 
   deploy:
-    needs: test # This ensures deploy only runs if tests pass
     runs-on: ubuntu-latest
+    needs: test
 
     steps:
-      - uses: actions/checkout@v4
+    - name: Checkout Code
+      uses: actions/checkout@v3
 
-      - name: Build Docker image
-        run: docker build -t common-assessment-tool .
+    - name: Set Up SSH Key
+      shell: bash
+      run: |
+        echo "${{ secrets.EC2_KEY }}" > ~/my-common-assessment-tool.pem
+        chmod 600 ~/my-common-assessment-tool.pem
 
-      - name: Run Docker container
-        run: |
-          docker run -d -p 8000:8000 common-assessment-tool
-          sleep 10  # Wait for container to start
-
-      - name: Test Docker container
-        run: |
-          curl http://localhost:8000/docs
+    - name: Deploy Code
+      shell: bash
+      run: |
+        # Copy all project files to the EC2 instance
+        scp -o StrictHostKeyChecking=no -i ~/my-common-assessment-tool.pem -r ./* ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/CommonAssessmentTool/
+        
+        # SSH into the EC2 instance and deploy with cleanup
+        ssh -o StrictHostKeyChecking=no -i ~/my-common-assessment-tool.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "
+          cd /home/${{ secrets.EC2_USER }}/CommonAssessmentTool &&
+          sudo docker-compose down -v &&
+          sudo docker system prune -f --volumes &&
+          sudo docker-compose up --build -d
+        "
