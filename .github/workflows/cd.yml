@@ -5,14 +5,10 @@ on:
     branches:
       - master
       - main
-      - Qilin_Branch
-      - Richard_Dev
   pull_request:
     branches:
       - master
       - main
-      - Qilin_Branch
-      - Richard_Dev
 
 jobs:
   test:
