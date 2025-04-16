@@ -20,23 +20,23 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
 def get_user_repository(db: Session = Depends(get_db)):
     """
     Get the user repository
-    
+
     Args:
         db: The database session
-        
+
     Returns:
         SQLAlchemyUserRepository: The user repository
     """
     return SQLAlchemyUserRepository(db)
 
 
-def get_authorization_service(repository = Depends(get_user_repository)):
+def get_authorization_service(repository=Depends(get_user_repository)):
     """
     Get the authorization service
-    
+
     Args:
         repository: The user repository
-        
+
     Returns:
         AuthorizationService: The authorization service
     """
@@ -45,18 +45,18 @@ def get_authorization_service(repository = Depends(get_user_repository)):
 
 async def get_current_user(
     token: str = Depends(oauth2_scheme),
-    auth_service: AuthorizationService = Depends(get_authorization_service)
+    auth_service: AuthorizationService = Depends(get_authorization_service),
 ) -> User:
     """
     Get the current user from the token
-    
+
     Args:
         token: The JWT token
         auth_service: The authorization service
-        
+
     Returns:
         User: The current user
-        
+
     Raises:
         HTTPException: If token validation fails
     """
@@ -66,18 +66,18 @@ async def get_current_user(
 
 async def get_admin_user(
     current_user: User = Depends(get_current_user),
-    auth_service: AuthorizationService = Depends(get_authorization_service)
+    auth_service: AuthorizationService = Depends(get_authorization_service),
 ) -> User:
     """
     Ensure the current user is an admin
-    
+
     Args:
         current_user: The current user
         auth_service: The authorization service
-        
+
     Returns:
         User: The current admin user
-        
+
     Raises:
         HTTPException: If user is not an admin
     """

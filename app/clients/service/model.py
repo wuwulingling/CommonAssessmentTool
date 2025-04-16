@@ -19,34 +19,56 @@ from sklearn.tree import DecisionTreeRegressor
 
 # === RANDOM FOREST ===
 
+
 def prepare_models():
     """
     Prepare and train the Random Forest model using the dataset.
-    
+
     Returns:
         RandomForestRegressor: Trained model for predicting success rates
     """
-    data = pd.read_csv('app/clients/service/data_commontool.csv')
+    data = pd.read_csv("app/clients/service/data_commontool.csv")
 
     feature_columns = [
-        'age', 'gender', 'work_experience', 'canada_workex', 'dep_num',
-        'canada_born', 'citizen_status', 'level_of_schooling',
-        'fluent_english', 'reading_english_scale', 'speaking_english_scale',
-        'writing_english_scale', 'numeracy_scale', 'computer_scale',
-        'transportation_bool', 'caregiver_bool', 'housing', 'income_source',
-        'felony_bool', 'attending_school', 'currently_employed',
-        'substance_use', 'time_unemployed', 'need_mental_health_support_bool'
+        "age",
+        "gender",
+        "work_experience",
+        "canada_workex",
+        "dep_num",
+        "canada_born",
+        "citizen_status",
+        "level_of_schooling",
+        "fluent_english",
+        "reading_english_scale",
+        "speaking_english_scale",
+        "writing_english_scale",
+        "numeracy_scale",
+        "computer_scale",
+        "transportation_bool",
+        "caregiver_bool",
+        "housing",
+        "income_source",
+        "felony_bool",
+        "attending_school",
+        "currently_employed",
+        "substance_use",
+        "time_unemployed",
+        "need_mental_health_support_bool",
     ]
 
     intervention_columns = [
-        'employment_assistance', 'life_stabilization', 'retention_services',
-        'specialized_services', 'employment_related_financial_supports',
-        'employer_financial_supports', 'enhanced_referrals'
+        "employment_assistance",
+        "life_stabilization",
+        "retention_services",
+        "specialized_services",
+        "employment_related_financial_supports",
+        "employer_financial_supports",
+        "enhanced_referrals",
     ]
 
     all_features = feature_columns + intervention_columns
     features = np.array(data[all_features])
-    targets = np.array(data['success_rate'])
+    targets = np.array(data["success_rate"])
 
     features_train, _, targets_train, _ = train_test_split(
         features, targets, test_size=0.2, random_state=42
@@ -56,7 +78,9 @@ def prepare_models():
     model.fit(features_train, targets_train)
     return model
 
+
 # === LINEAR REGRESSION ===
+
 
 def prepare_linear_regression_model():
     """
@@ -65,27 +89,48 @@ def prepare_linear_regression_model():
     Returns:
         LinearRegression: Trained model
     """
-    data = pd.read_csv('app/clients/service/data_commontool.csv')
+    data = pd.read_csv("app/clients/service/data_commontool.csv")
 
     feature_columns = [
-        'age', 'gender', 'work_experience', 'canada_workex', 'dep_num',
-        'canada_born', 'citizen_status', 'level_of_schooling',
-        'fluent_english', 'reading_english_scale', 'speaking_english_scale',
-        'writing_english_scale', 'numeracy_scale', 'computer_scale',
-        'transportation_bool', 'caregiver_bool', 'housing', 'income_source',
-        'felony_bool', 'attending_school', 'currently_employed',
-        'substance_use', 'time_unemployed', 'need_mental_health_support_bool'
+        "age",
+        "gender",
+        "work_experience",
+        "canada_workex",
+        "dep_num",
+        "canada_born",
+        "citizen_status",
+        "level_of_schooling",
+        "fluent_english",
+        "reading_english_scale",
+        "speaking_english_scale",
+        "writing_english_scale",
+        "numeracy_scale",
+        "computer_scale",
+        "transportation_bool",
+        "caregiver_bool",
+        "housing",
+        "income_source",
+        "felony_bool",
+        "attending_school",
+        "currently_employed",
+        "substance_use",
+        "time_unemployed",
+        "need_mental_health_support_bool",
     ]
 
     intervention_columns = [
-        'employment_assistance', 'life_stabilization', 'retention_services',
-        'specialized_services', 'employment_related_financial_supports',
-        'employer_financial_supports', 'enhanced_referrals'
+        "employment_assistance",
+        "life_stabilization",
+        "retention_services",
+        "specialized_services",
+        "employment_related_financial_supports",
+        "employer_financial_supports",
+        "enhanced_referrals",
     ]
 
     all_features = feature_columns + intervention_columns
     features = np.array(data[all_features])
-    targets = np.array(data['success_rate'])
+    targets = np.array(data["success_rate"])
 
     features_train, _, targets_train, _ = train_test_split(
         features, targets, test_size=0.2, random_state=42
@@ -95,7 +140,9 @@ def prepare_linear_regression_model():
     model.fit(features_train, targets_train)
     return model
 
+
 # === DECISION TREE ===
+
 
 def prepare_decision_tree_model():
     """
@@ -104,27 +151,48 @@ def prepare_decision_tree_model():
     Returns:
         DecisionTreeRegressor: Trained model
     """
-    data = pd.read_csv('app/clients/service/data_commontool.csv')
+    data = pd.read_csv("app/clients/service/data_commontool.csv")
 
     feature_columns = [
-        'age', 'gender', 'work_experience', 'canada_workex', 'dep_num',
-        'canada_born', 'citizen_status', 'level_of_schooling',
-        'fluent_english', 'reading_english_scale', 'speaking_english_scale',
-        'writing_english_scale', 'numeracy_scale', 'computer_scale',
-        'transportation_bool', 'caregiver_bool', 'housing', 'income_source',
-        'felony_bool', 'attending_school', 'currently_employed',
-        'substance_use', 'time_unemployed', 'need_mental_health_support_bool'
+        "age",
+        "gender",
+        "work_experience",
+        "canada_workex",
+        "dep_num",
+        "canada_born",
+        "citizen_status",
+        "level_of_schooling",
+        "fluent_english",
+        "reading_english_scale",
+        "speaking_english_scale",
+        "writing_english_scale",
+        "numeracy_scale",
+        "computer_scale",
+        "transportation_bool",
+        "caregiver_bool",
+        "housing",
+        "income_source",
+        "felony_bool",
+        "attending_school",
+        "currently_employed",
+        "substance_use",
+        "time_unemployed",
+        "need_mental_health_support_bool",
     ]
 
     intervention_columns = [
-        'employment_assistance', 'life_stabilization', 'retention_services',
-        'specialized_services', 'employment_related_financial_supports',
-        'employer_financial_supports', 'enhanced_referrals'
+        "employment_assistance",
+        "life_stabilization",
+        "retention_services",
+        "specialized_services",
+        "employment_related_financial_supports",
+        "employer_financial_supports",
+        "enhanced_referrals",
     ]
 
     all_features = feature_columns + intervention_columns
     features = np.array(data[all_features])
-    targets = np.array(data['success_rate'])
+    targets = np.array(data["success_rate"])
 
     features_train, _, targets_train, _ = train_test_split(
         features, targets, test_size=0.2, random_state=42
@@ -134,12 +202,14 @@ def prepare_decision_tree_model():
     model.fit(features_train, targets_train)
     return model
 
+
 # === SAVE FUNCTION (shared) ===
+
 
 def save_model(model, filename="model.pkl"):
     """
     Save the trained model to a file.
-    
+
     Args:
         model: Trained model to save
         filename (str): Name of the file to save the model to
@@ -147,7 +217,9 @@ def save_model(model, filename="model.pkl"):
     with open(filename, "wb") as model_file:
         pickle.dump(model, model_file)
 
+
 # === MAIN: train all models ===
+
 
 def train_all_models():
     """
@@ -166,6 +238,6 @@ def train_all_models():
 
     print("All models saved successfully!")
 
+
 if __name__ == "__main__":
     train_all_models()
-

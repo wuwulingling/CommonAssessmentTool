@@ -9,16 +9,19 @@ from typing import Optional, List
 from enum import IntEnum
 from app.models import UserRole
 
+
 # Enums for validation
 class Gender(IntEnum):
     MALE = 1
     FEMALE = 2
+
 
 class PredictionInput(BaseModel):
     """
     Schema for prediction input data containing all client assessment fields.
     Used for making predictions about client outcomes.
     """
+
     age: int
     gender: str
     work_experience: int
@@ -43,6 +46,7 @@ class PredictionInput(BaseModel):
     substance_use: str
     time_unemployed: int
     need_mental_health_support_bool: str
+
 
 class ClientBase(BaseModel):
     age: int = Field(ge=18, description="Age of client, must be 18 or older")
@@ -96,15 +100,17 @@ class ClientBase(BaseModel):
                 "currently_employed": False,
                 "substance_use": False,
                 "time_unemployed": 6,
-                "need_mental_health_support_bool": False
+                "need_mental_health_support_bool": False,
             }
         }
+
 
 class ClientResponse(ClientBase):
     id: int
 
     class Config:
         from_attributes = True
+
 
 class ClientUpdate(BaseModel):
     age: Optional[int] = Field(None, ge=18)
@@ -132,6 +138,7 @@ class ClientUpdate(BaseModel):
     time_unemployed: Optional[int] = Field(None, ge=0)
     need_mental_health_support_bool: Optional[bool] = None
 
+
 class ServiceResponse(BaseModel):
     client_id: int
     user_id: int
@@ -147,6 +154,7 @@ class ServiceResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
 class ServiceUpdate(BaseModel):
     employment_assistance: Optional[bool] = None
     life_stabilization: Optional[bool] = None
@@ -156,6 +164,7 @@ class ServiceUpdate(BaseModel):
     employer_financial_supports: Optional[bool] = None
     enhanced_referrals: Optional[bool] = None
     success_rate: Optional[int] = Field(None, ge=0, le=100)
+
 
 class ClientListResponse(BaseModel):
     clients: List[ClientResponse]

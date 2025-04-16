@@ -15,7 +15,7 @@ BASE_DIR = os.path.dirname(__file__)
 model_files = {
     "random_forest": "model_rf.pkl",
     "linear_regression": "model_lr.pkl",
-    "decision_tree": "model_dt.pkl"
+    "decision_tree": "model_dt.pkl",
 }
 
 # Load all models on startup
@@ -24,19 +24,24 @@ try:
     for name, path in model_files.items():
         try:
             full_path = os.path.join(BASE_DIR, path)
-            with open(full_path, 'rb') as f:
+            with open(full_path, "rb") as f:
                 models[name] = pickle.load(f)
         except (ModuleNotFoundError, ImportError, FileNotFoundError) as e:
-            print(f"Warning: Could not load model '{name}' from {full_path}. Using a placeholder model. Error: {e}")
+            print(
+                f"Warning: Could not load model '{name}' from {full_path}. Using a placeholder model. Error: {e}"
+            )
             from sklearn.ensemble import RandomForestRegressor
+
             models[name] = RandomForestRegressor()
 except Exception as e:
     print(f"Error loading models: {e}")
     from sklearn.ensemble import RandomForestRegressor
+
     models = {"default": RandomForestRegressor()}
 
 
 # === Public functions ===
+
 
 def list_models():
     """
@@ -44,11 +49,13 @@ def list_models():
     """
     return list(models.keys())
 
+
 def get_current_model_name():
     """
     Returns the name of the currently active model.
     """
     return current_model_name
+
 
 def get_current_model():
     """
@@ -56,13 +63,14 @@ def get_current_model():
     """
     return current_model
 
+
 def switch_model(model_name: str):
     """
     Switches the currently active model to the given one.
-    
+
     Args:
         model_name (str): One of the keys in model_files
-        
+
     Raises:
         ValueError: If the model_name is not available
     """

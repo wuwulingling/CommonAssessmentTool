@@ -18,18 +18,18 @@ async def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
     auth_service: AuthenticationService = Depends(
         lambda repo=Depends(get_user_repository): AuthenticationService(repo)
-    )
+    ),
 ):
     """
     Login endpoint to get access token
-    
+
     Args:
         form_data: The login form data
         auth_service: The authentication service
-        
+
     Returns:
         dict: Access token response
-        
+
     Raises:
         HTTPException: If authentication fails
     """
@@ -49,19 +49,19 @@ async def create_user(
     current_user: User = Depends(get_admin_user),
     auth_service: AuthenticationService = Depends(
         lambda repo=Depends(get_user_repository): AuthenticationService(repo)
-    )
+    ),
 ):
     """
     Create a new user (admin only)
-    
+
     Args:
         user_data: The user data
         current_user: The current admin user
         auth_service: The authentication service
-        
+
     Returns:
         UserResponse: The created user
-        
+
     Raises:
         HTTPException: If user creation fails
     """

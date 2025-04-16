@@ -2,6 +2,7 @@
 Security utilities for authentication handling.
 Implements password hashing, verification, and JWT token creation/validation.
 """
+
 from datetime import datetime, timedelta
 from typing import Optional
 from fastapi import HTTPException, status
@@ -17,6 +18,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 # Password context for hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+
 # Token validation and data extraction
 class TokenData(BaseModel):
     username: str
@@ -24,16 +26,16 @@ class TokenData(BaseModel):
 
 class TokenService:
     """Service for JWT token operations"""
-    
+
     @staticmethod
     def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
         """
         Create a new JWT access token
-        
+
         Args:
             data: The data to encode in the token
             expires_delta: Optional expiration time delta
-            
+
         Returns:
             str: The encoded JWT token
         """
@@ -45,18 +47,18 @@ class TokenService:
         to_encode.update({"exp": expire})
         encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
         return encoded_jwt
-    
+
     @staticmethod
     def decode_token(token: str) -> TokenData:
         """
         Decode and validate a JWT token
-        
+
         Args:
             token: The JWT token to decode
-            
+
         Returns:
             TokenData: The decoded token data
-            
+
         Raises:
             HTTPException: If token validation fails
         """
@@ -77,29 +79,29 @@ class TokenService:
 
 class PasswordService:
     """Service for password operations"""
-    
+
     @staticmethod
     def verify_password(plain_password: str, hashed_password: str) -> bool:
         """
         Verify a password against its hash
-        
+
         Args:
             plain_password: The plain text password
             hashed_password: The hashed password to compare against
-            
+
         Returns:
             bool: True if password matches, False otherwise
         """
         return pwd_context.verify(plain_password, hashed_password)
-    
+
     @staticmethod
     def get_password_hash(password: str) -> str:
         """
         Hash a password
-        
+
         Args:
             password: The password to hash
-            
+
         Returns:
             str: The hashed password
         """
