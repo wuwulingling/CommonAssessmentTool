@@ -2,6 +2,7 @@
 Router for client endpoints.
 Handles HTTP requests for client-related operations.
 """
+from fastapi import HTTPException
 from fastapi import APIRouter, Depends, status, Query
 from typing import List, Optional
 from app.auth.dependencies import get_current_user, get_admin_user
