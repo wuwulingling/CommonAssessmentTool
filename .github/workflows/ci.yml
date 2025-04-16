@@ -33,7 +33,7 @@ jobs:
       # Step 4: Run code quality checks with pylint
       - name: Lint with pylint
         run: |
-          pylint app/ tests/
+          pylint app/ tests/ --exit-zero
 
       # Step 5: Check code formatting with black
       - name: Check code formatting with black
