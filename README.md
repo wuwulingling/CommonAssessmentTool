@@ -75,3 +75,6 @@ This also has an API file to interact with the front end, and logic in order to 
 3. Access the application at http://localhost:8000/docs
 
 4. Log in as admin (username: admin password: admin123)
+
+-------------------------How to access the public address-------------------------
+Access the swagger UI at http://ec2-98-82-10-96.compute-1.amazonaws.com:8000/docs
